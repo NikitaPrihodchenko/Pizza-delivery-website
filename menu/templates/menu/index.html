@@ -1,0 +1,59 @@
+{% extends "menu/base.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h1 class="mb-4">Добро пожаловать в Pizza Delivery!</h1>
+<p class="lead">Самая вкусная пицца у вас дома 🍕</p>
+
+<section id="menu" class="mt-5">
+  <h2 class="mb-4">Наше меню</h2>
+
+  <div class="menu-categories d-flex gap-2 mb-4 overflow-auto pb-2">
+    <button class="btn btn-outline-dark category-btn active" data-category="all">Все</button>
+    {% for category in categories %}
+        <button class="btn btn-outline-dark category-btn" data-category="{{ category.id }}">
+            {{ category.name }}
+        </button>
+    {% endfor %}
+  </div>
+
+
+  <!-- Карточки товаров -->
+  {% for category in categories %}
+    <div id="cat-{{ category.id }}" class="mb-5">
+<!--      <h3 class="mb-3">{{ category.name }}</h3>-->
+      <div class="row">
+        {% for product in category.products.all %}
+        <div class="col-md-3 mb-4 product-card" id="product-{{ product.id }}" data-cat="{{ category.id }}">
+          <div class="card h-100 card-hover border-0" style="cursor:pointer;" onclick="location.href='{% url 'menu_detail' product.pk %}'">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            {% endif %}
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <h5 class="card-title">{{ product.name }}</h5>
+                {% if product.weight %}
+                  <span class="badge bg-light text-dark me-3">{{ product.weight }} г</span>
+                {% endif %}
+              </div>
+              <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+              <div class="d-flex justify-content-between align-items-center mt-2 px-4">
+                  <p class="fw-bold mb-0">{{ product.price }} грн</p>
+                  <form action="{% url 'cart_add' product.id %}"
+                    method="POST"
+                    data-hx-post="{% url 'cart_add' product.id %}"
+                    data-hx-target="#cart-count"
+                    data-hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success" onclick="event.stopPropagation()">В корзину</button>
+                  </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% load cart_tags %}
+
+<span id="cart-count" class="badge bg-danger rounded-pill">
+    {{ request.session.cart|dict_total_quantity }}
+</span>

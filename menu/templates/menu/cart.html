@@ -1,0 +1,57 @@
+{% extends "menu/base.html" %}
+{% block title %}Корзина{% endblock %}
+{% block content %}
+
+<h2>Корзина</h2>
+
+<div id="cart-content">
+{% if cart %}
+<table class="table align-middle">
+  <thead>
+    <tr>
+      <th>Товар</th>
+      <th>Цена</th>
+      <th>Кол-во</th>
+      <th>Сумма</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for key, item in cart.items %}
+    <tr>
+      <td>
+        <strong>{{ item.name }}</strong>
+      </td>
+      <td>{{ item.price }} грн</td>
+      <td>
+        <form action="{% url 'cart_update' key %}" method="POST" class="d-flex">
+          {% csrf_token %}
+          <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control w-50">
+          <button class="btn btn-primary btn-sm ms-2">OK</button>
+        </form>
+      </td>
+      <td>{{ item.price|floatformat:2|add:""|floatformat:2|floatformat }} × {{ item.quantity }} = {{ item.price|floatformat:2|add:""|floatformat:2|add:""|floatformat }}</td>
+      <td>
+        <a href="{% url 'cart_remove' key %}" class="btn btn-danger btn-sm">Удалить</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form method="post" data-hx-post="{% url 'cart_clear' %}" data-hx-target="#cart-content" data-hx-swap="outerHTML">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger mb-3">Удалить всё</button>
+</form>
+
+<h4>Итого: {{ total }} грн</h4>
+<a href="{% url 'order_view' %}" class="btn btn-success">Оформить заказ</a>
+
+{% else %}
+<p>Корзина пуста</p>
+{% endif %}
+
+</div>
+
+{% endblock %}

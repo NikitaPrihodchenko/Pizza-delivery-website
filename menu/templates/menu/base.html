@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Pizza Delivery{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<link rel="stylesheet" href="{% static 'menu/css/style.css' %}">
+
+<body>
+<header class="bg-dark text-white sticky-top shadow">
+  <nav class="navbar navbar-expand-lg navbar-dark container">
+    <a class="navbar-brand" href="/">🍕 PizzaDelivery</a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="/about/">О нас</a></li>
+      <li class="nav-item"><a class="nav-link" href="/contact/">Контакты</a></li>
+      <li class="nav-item"><a class="nav-link" href="/">Меню</a></li>
+      <li class="nav-item">
+        <a href="{% url 'cart_view' %}" class="nav-link d-flex align-items-center">Корзина
+          <span id="cart-count">
+            {% include 'menu/cart_count.html' with total_items=request.session.cart_total %}
+          </span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+<main class="container my-4">
+  {% block content %}{% endblock %}
+</main>
+<footer class="bg-light text-center py-4">
+  <p>&copy; 2025 Pizza Delivery</p>
+  <a href="#">Instagram</a> | <a href="#">Facebook</a> | <a href="#">Twitter</a>
+</footer>
+
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="{% static 'menu/js/script.js' %}"></script>
+
+</body>
+</html>
